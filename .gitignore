@@ -1,0 +1,36 @@
+# 忽略缓存文件
+cache/
+*.cache
+
+# 忽略生成的报告
+reports/
+
+# 忽略Python虚拟环境
+venv/
+env/
+
+# 忽略Python编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略IDE配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 忽略日志文件
+*.log
+
+# 忽略PSReadline相关文件
+fix_psreadline*
+disable_psreadline*
+install_psreadline*
+kill_powershell.py

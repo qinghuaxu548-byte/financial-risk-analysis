@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金融风险分析</title>
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c5aa0;
+            margin-bottom: 12px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        
+        .input-section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .input-section label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.05rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        #stock-input {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #fafbff;
+        }
+        
+        #stock-input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+            background-color: white;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background-color: #2c5aa0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.25);
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            background-color: #4a90e2;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(44, 90, 160, 0.35);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(44, 90, 160, 0.2);
+        }
+        
+        .hot-stocks {
+            margin-bottom: 0;
+        }
+        
+        .hot-stocks h3 {
+            margin-bottom: 16px;
+            color: #333;
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+        
+        .stock-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .stock-tag {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c5aa0;
+            background-color: white;
+            border: 2px solid #2c5aa0;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stock-tag:hover {
+            color: white;
+            background-color: #2c5aa0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.25);
+        }
+        
+        .results-section {
+            margin-bottom: 40px;
+        }
+        
+        .results-section h2 {
+            margin-bottom: 25px;
+            color: #2c5aa0;
+            border-bottom: 2px solid #e0e7ff;
+            padding-bottom: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .main-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .result-card {
+            background-color: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #2c5aa0;
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .result-card h3 {
+            margin-bottom: 20px;
+            color: #2c5aa0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        
+        .detail-card {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #2c5aa0;
+            transition: all 0.3s ease;
+        }
+        
+        .detail-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .detail-card h3 {
+            margin-bottom: 20px;
+            color: #2c5aa0;
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-item {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0f4ff;
+            padding-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .report-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #2c5aa0;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            margin: 20px 0;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #c62828;
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-results {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-results {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题区域 -->
+        <header>
+            <h1><i class="fas fa-chart-line"></i> 金融风险分析</h1>
+            <p class="subtitle">输入股票名称或代码，获得风险分析结果</p>
+        </header>
+        
+        <!-- 输入区域 -->
+        <section class="input-section">
+            <label for="stock-input"><i class="fas fa-search"></i> 股票名称或代码</label>
+            <div class="input-group">
+                <div style="position: relative; flex: 1;">
+                    <i class="fas fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #666; z-index: 1;"></i>
+                    <input type="text" id="stock-input" placeholder="请输入股票名称或代码，如：贵州茅台、000333" style="width: 100%; padding-left: 40px;" />
+                </div>
+                <button class="btn" id="analyze-btn"><i class="fas fa-rocket"></i> 分析</button>
+            </div>
+            
+            <!-- 热门股票 -->
+            <div class="hot-stocks">
+                <h3><i class="fas fa-fire"></i> 热门股票</h3>
+                <div class="stock-tags">
+                    <span class="stock-tag"><i class="fas fa-tag"></i> 贵州茅台</span>
+                    <span class="stock-tag"><i class="fas fa-tag"></i> 宁德时代</span>
+                    <span class="stock-tag"><i class="fas fa-tag"></i> 紫金矿业</span>
+                    <span class="stock-tag"><i class="fas fa-tag"></i> 海康威视</span>
+                    <span class="stock-tag"><i class="fas fa-tag"></i> 美的集团</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 加载状态 -->
+        <div class="loading" id="loading">
+            <p><i class="fas fa-spinner fa-spin"></i> 正在分析中，请稍候...</p>
+        </div>
+        
+        <!-- 错误信息 -->
+        <div class="error" id="error" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i> <span id="error-message"></span>
+        </div>
+        
+        <!-- 主要分析结果 -->
+        <section class="results-section" id="results" style="display: none;">
+            <h2><i class="fas fa-chart-pie"></i> 主要分析结果</h2>
+            <div class="main-results">
+                <!-- 股票基本信息 -->
+                <div class="result-card">
+                    <h3><i class="fas fa-info-circle"></i> 股票基本信息</h3>
+                    <div id="basic-info"></div>
+                </div>
+                
+                <!-- 风险分析结果 -->
+                <div class="result-card">
+                    <h3><i class="fas fa-shield-alt"></i> 风险分析结果</h3>
+                    <div id="comprehensive-risk"></div>
+                </div>
+            </div>
+            
+            <!-- 详细分析结果 -->
+            <h2><i class="fas fa-table"></i> 详细分析结果</h2>
+            <div class="detail-results">
+                <!-- 波动率分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-wave-square"></i> 波动率分析结果</h3>
+                    <div id="volatility-analysis"></div>
+                </div>
+                
+                <!-- 趋势分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-chart-line"></i> 趋势分析结果</h3>
+                    <div id="trend-analysis"></div>
+                </div>
+                
+                <!-- 换手率分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-sync-alt"></i> 换手率分析结果</h3>
+                    <div id="turnover-analysis"></div>
+                </div>
+                
+                <!-- 估值分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-balance-scale"></i> 估值分析结果</h3>
+                    <div id="valuation-analysis"></div>
+                </div>
+                
+                <!-- 历史估值分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-history"></i> 历史估值分析结果</h3>
+                    <div id="historical-valuation"></div>
+                </div>
+                
+                <!-- 财务健康度分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-heartbeat"></i> 财务健康度分析结果</h3>
+                    <div id="financial-health"></div>
+                </div>
+                
+                <!-- RSI指标分析结果 -->
+                <div class="detail-card">
+                    <h3><i class="fas fa-chart-bar"></i> RSI指标分析结果</h3>
+                    <div id="rsi-analysis"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 生成报告按钮 -->
+        <section class="report-section" id="report-section" style="display: none;">
+            <form id="report-form" method="post" action="/generate_report">
+                <input type="hidden" name="stock_input" id="report-stock-input" />
+                <button type="submit" class="btn"><i class="fas fa-file-alt"></i> 生成风险分析报告</button>
+            </form>
+        </section>
+    </div>
+    
+    <script>
+        // DOM元素
+        const stockInput = document.getElementById('stock-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        const reportSection = document.getElementById('report-section');
+        const reportStockInput = document.getElementById('report-stock-input');
+        const stockTags = document.querySelectorAll('.stock-tag');
+        
+        // 热门股票点击事件
+        stockTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                stockInput.value = tag.textContent;
+                analyzeStock();
+            });
+        });
+        
+        // 分析按钮点击事件
+        analyzeBtn.addEventListener('click', analyzeStock);
+        
+        // 回车键触发分析
+        stockInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                analyzeStock();
+            }
+        });
+        
+        // 分析股票函数
+        function analyzeStock() {
+            const stockValue = stockInput.value.trim();
+            if (!stockValue) {
+                showError('请输入股票名称或代码');
+                return;
+            }
+            
+            showLoading();
+            hideError();
+            
+            // 发送分析请求
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'stock_input': stockValue
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    displayResults(data);
+                    showResults();
+                    reportStockInput.value = stockValue;
+                    showReportSection();
+                } else {
+                    showError(data.error);
+                }
+            })
+            .catch(err => {
+                hideLoading();
+                showError('分析失败，请稍后重试：' + err.message);
+            });
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            reportSection.style.display = 'none';
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            error.style.display = 'block';
+        }
+        
+        // 隐藏错误信息
+        function hideError() {
+            error.style.display = 'none';
+        }
+        
+        // 显示结果
+        function showResults() {
+            results.style.display = 'block';
+        }
+        
+        // 显示报告生成按钮
+        function showReportSection() {
+            reportSection.style.display = 'block';
+        }
+        
+        // 显示基本信息
+        function displayBasicInfo(info) {
+            const container = document.getElementById('basic-info');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">股票代码</span>
+                    <span class="info-value">${info.code}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">股票名称</span>
+                    <span class="info-value">${info.name}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">当前价格</span>
+                    <span class="info-value">${info.current_price}元</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">涨跌幅</span>
+                    <span class="info-value">${info.change_percent}%</span>
+                </div>
+            `;
+        }
+        
+        // 显示综合风险信息
+        function displayComprehensiveRisk(risk) {
+            const container = document.getElementById('comprehensive-risk');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">风险等级</span>
+                    <span class="info-value">${risk.risk_level}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">风险得分</span>
+                    <span class="info-value">${risk.final_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">行业</span>
+                    <span class="info-value">${risk.industry}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">申万一级行业</span>
+                    <span class="info-value">${risk.sw_industry}</span>
+                </div>
+            `;
+        }
+        
+        // 显示波动率分析
+        function displayVolatilityAnalysis(volatility) {
+            const container = document.getElementById('volatility-analysis');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">波动率得分</span>
+                    <span class="info-value">${volatility.volatility_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">年化波动率</span>
+                    <span class="info-value">${volatility.annualized_volatility ? volatility.annualized_volatility.toFixed(2) : 'N/A'}%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">波动率等级</span>
+                    <span class="info-value">${volatility.volatility_level}</span>
+                </div>
+            `;
+        }
+        
+        // 显示趋势分析
+        function displayTrendAnalysis(trend) {
+            const container = document.getElementById('trend-analysis');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">趋势得分</span>
+                    <span class="info-value">${trend.trend_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">趋势状态</span>
+                    <span class="info-value">${trend.trend_status}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">趋势强度</span>
+                    <span class="info-value">${trend.trend_strength}</span>
+                </div>
+            `;
+        }
+        
+        // 显示换手率分析
+        function displayTurnoverAnalysis(turnover) {
+            const container = document.getElementById('turnover-analysis');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">换手率得分</span>
+                    <span class="info-value">${turnover.turnover_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">实际换手率</span>
+                    <span class="info-value">${turnover.actual_turnover ? turnover.actual_turnover.toFixed(4) : 'N/A'}%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">基准换手率</span>
+                    <span class="info-value">${turnover.benchmark_turnover ? turnover.benchmark_turnover.toFixed(4) : 'N/A'}%</span>
+                </div>
+            `;
+        }
+        
+        // 显示估值分析
+        function displayValuationAnalysis(valuation) {
+            const container = document.getElementById('valuation-analysis');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">估值得分</span>
+                    <span class="info-value">${valuation.final_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PETTM</span>
+                    <span class="info-value">${valuation.petttm ? valuation.petttm.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PB</span>
+                    <span class="info-value">${valuation.pb ? valuation.pb.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PSTTM</span>
+                    <span class="info-value">${valuation.psttm ? valuation.psttm.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">股息率</span>
+                    <span class="info-value">${valuation.dividend_yield ? valuation.dividend_yield.toFixed(2) : 'N/A'}%</span>
+                </div>
+            `;
+        }
+        
+        // 显示历史估值分析
+        function displayHistoricalValuation(historical) {
+            const container = document.getElementById('historical-valuation');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">历史估值得分</span>
+                    <span class="info-value">${historical.final_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">当前PETTM</span>
+                    <span class="info-value">${historical.current_valuation.petttm ? historical.current_valuation.petttm.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PETTM分位</span>
+                    <span class="info-value">${historical.percentiles.petttm_percentile ? historical.percentiles.petttm_percentile.toFixed(2) : 'N/A'}%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">当前PB</span>
+                    <span class="info-value">${historical.current_valuation.pb ? historical.current_valuation.pb.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PB分位</span>
+                    <span class="info-value">${historical.percentiles.pb_percentile ? historical.percentiles.pb_percentile.toFixed(2) : 'N/A'}%</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">当前PSTTM</span>
+                    <span class="info-value">${historical.current_valuation.psttm ? historical.current_valuation.psttm.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">PSTTM分位</span>
+                    <span class="info-value">${historical.percentiles.psttm_percentile ? historical.percentiles.psttm_percentile.toFixed(2) : 'N/A'}%</span>
+                </div>
+            `;
+        }
+        
+        // 显示财务健康度分析
+        function displayFinancialHealth(financial) {
+            const container = document.getElementById('financial-health');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">财务健康得分</span>
+                    <span class="info-value">${financial.final_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">盈利能力得分</span>
+                    <span class="info-value">${financial.profitability_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">现金流得分</span>
+                    <span class="info-value">${financial.cashflow_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">偿债能力得分</span>
+                    <span class="info-value">${financial.solvency_score}分</span>
+                </div>
+            `;
+        }
+        
+        // 显示RSI指标分析
+        function displayRsiAnalysis(rsi) {
+            const container = document.getElementById('rsi-analysis');
+            container.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">RSI得分</span>
+                    <span class="info-value">${rsi.rsi_score}分</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">RSI值</span>
+                    <span class="info-value">${rsi.rsi_value ? rsi.rsi_value.toFixed(2) : 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">RSI状态</span>
+                    <span class="info-value">${rsi.rsi_status}</span>
+                </div>
+            `;
+        }
+        
+        // 显示所有结果
+        function displayResults(data) {
+            displayBasicInfo(data.basic_info);
+            displayComprehensiveRisk(data.comprehensive_risk);
+            displayVolatilityAnalysis(data.volatility_analysis);
+            displayTrendAnalysis(data.trend_analysis);
+            displayTurnoverAnalysis(data.turnover_analysis);
+            displayValuationAnalysis(data.valuation_analysis);
+            displayHistoricalValuation(data.historical_valuation);
+            displayFinancialHealth(data.financial_health);
+            displayRsiAnalysis(data.rsi_analysis);
+        }
+        
+        // 隐藏结果
+        function hideResults() {
+            results.style.display = 'none';
+            reportSection.style.display = 'none';
+        }
+        
+        // 隐藏报告生成按钮
+        function hideReportSection() {
+            reportSection.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
